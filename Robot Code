@@ -1,0 +1,67 @@
+
+//Harry copy pasted this here 29/4/19. 
+
+
+
+#include <ENGG1500Lib.h>
+#define ENA 5                                                     //motor outputs
+#define ENB 6
+#define IN1 8
+#define IN2 9
+#define IN3 10
+#define IN4 11
+
+
+
+// These #define statements make the code more readable.
+// Instead of a pin number "7" or "12" we can write "ECHO" or "TRIG"
+#define ECHO 12
+#define TRIG 7
+
+void setup() {
+  //sensors
+  pinMode(A0,INPUT); // middle line sensor
+  pinMode(A1,INPUT); // left line sensor
+  pinMode(A2,INPUT); // right line sensor
+  pinMode(A3,OUTPUT); // servo
+  pinMode(A4,INPUT); //left front corner sensor
+  pinMode(A5,INPUT);  //right front corner sensor
+  //pinMode(A4,INPUT);
+  pinMode(ECHO,INPUT); //Initialise pin 12 as an input
+  pinMode(TRIG,OUTPUT); //Initialise pin 7 as an output
+  Serial.begin(9600); //begin serial communication 
+  enc_init();
+
+  
+
+//engine control
+  pinMode(5,OUTPUT); //set ENA as an output
+  pinMode(6,OUTPUT); //set ENB as an output
+  pinMode(8,OUTPUT); //set IN1 as an output
+  pinMode(9,OUTPUT); //set IN2 as an output
+  pinMode(10,OUTPUT); //set IN3 as an output
+  pinMode(11,OUTPUT); //set IN4 as an output
+  delay(2000);//delay before starting loop
+  enc_init(); //initialise encoders
+  
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+int sensorRightLine,sensorMiddleLine,sensorLeftLine;
+  sensorMiddleLine = digitalRead(A0);//middle line
+  sensorLeftLine = digitalRead(A1);//left line
+  sensorRightLine = digitalRead(A2);//right line
+
+      followLine();
+    //  if (sensorMiddleLine == 0 && sensorLeftLine == 0 && sensorRightLine == 0)
+    //     noLineGuess();
+     //    Serial.print("Outside funtion");
+}
+
+
+//Call to follow a line with no other considerations
+void followLine(void) {
+int sensorRightLine,sensorMiddleLine,sensorLeftLine;
+  sensorMiddleLine = digitalRead(A0);//middle line
+  sensorL
