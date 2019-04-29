@@ -1,7 +1,4 @@
 
-//Harry copy pasted this here 29/4/19. 
-
-
 
 #include <ENGG1500Lib.h>
 #define ENA 5                                                     //motor outputs
@@ -20,18 +17,18 @@
 
 void setup() {
   //sensors
-  pinMode(A0,INPUT); // middle line sensor
-  pinMode(A1,INPUT); // left line sensor
-  pinMode(A2,INPUT); // right line sensor
-  pinMode(A3,OUTPUT); // servo
-  pinMode(A4,INPUT); //left front corner sensor
+  pinMode(A0,INPUT); // Left
+  pinMode(A1,INPUT); // Left Mddle
+  pinMode(A2,INPUT); // Right Mddle 
+  pinMode(A3,INPUT); // Right
+  pinMode(A4,INPUT); // left front corner Yay delete me please
   pinMode(A5,INPUT);  //right front corner sensor
   //pinMode(A4,INPUT);
   pinMode(ECHO,INPUT); //Initialise pin 12 as an input
   pinMode(TRIG,OUTPUT); //Initialise pin 7 as an output
   Serial.begin(9600); //begin serial communication 
   enc_init();
-
+  Serial.begin(115200);
   
 
 //engine control
@@ -48,12 +45,11 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-int sensorRightLine,sensorMiddleLine,sensorLeftLine;
-  sensorMiddleLine = digitalRead(A0);//middle line
-  sensorLeftLine = digitalRead(A1);//left line
-  sensorRightLine = digitalRead(A2);//right line
+  int z = 3;
 
-      followLine();
+  
+      lineFollow(z);
+   //   followLine();
     //  if (sensorMiddleLine == 0 && sensorLeftLine == 0 && sensorRightLine == 0)
     //     noLineGuess();
      //    Serial.print("Outside funtion");
@@ -61,7 +57,141 @@ int sensorRightLine,sensorMiddleLine,sensorLeftLine;
 
 
 //Call to follow a line with no other considerations
-void followLine(void) {
+/*void followLine(void) {
 int sensorRightLine,sensorMiddleLine,sensorLeftLine;
   sensorMiddleLine = digitalRead(A0);//middle line
-  sensorL
+  sensorLeftLine = digitalRead(A1);//left line
+  sensorRightLine = digitalRead(A2);//right line
+if (sensorRightLine==0 && sensorMiddleLine==1 && sensorLeftLine==0){
+  allForwards();
+  analogWrite(5, 70);
+  analogWrite(6, 70);
+  delay(1);
+  
+}
+if (sensorRightLine==1 && sensorMiddleLine==1 && sensorLeftLine==0){
+  leftForwards();
+  analogWrite(5, 70);
+  analogWrite(6, 70);
+  delay(1);
+}
+
+if (sensorRightLine==0 && sensorMiddleLine==1 && sensorLeftLine==1){
+  rightForwards();
+  analogWrite(5, 70);
+  analogWrite(6, 70);
+  delay(1);
+}
+if (sensorRightLine==1 && sensorMiddleLine==0 && sensorLeftLine==0){
+  leftForwards();
+  rightBackwards();
+  analogWrite(5, 70);
+  analogWrite(6, 70);
+  delay(1);
+}
+
+if (sensorRightLine==0 && sensorMiddleLine==0 && sensorLeftLine==1){
+  rightForwards();
+  leftBackwards();
+  analogWrite(5, 70);
+  analogWrite(6, 70);
+  delay(1);
+}
+
+//if (sensorRightLine==0 && sensorMiddleLine==0 && sensorLeftLine==0){
+//  allBackwards();
+//  analogWrite(5, 70);
+//  analogWrite(6, 70);
+//  delay(1);
+//}
+}
+ /*void noLineGuess() {
+  enc_clear();
+ do {
+  allForwards();
+  analogWrite(5, 50);
+  analogWrite(6, 50);
+  }
+   while (enc_getLeft() < 40 && enc_getRight() < 40);
+  Serial.print("inside function");
+  
+  //Ultrasonic Sensor?
+  
+ }
+ */
+  //motor control
+  void leftForwards(void) //This function sets IN1 = LOW and IN2 = HIGH in order to set the direction to forwards for motor 1
+{
+  digitalWrite(8,LOW); //IN1
+  digitalWrite(9,HIGH); //IN2
+}
+
+void leftBackwards(void) //This function sets IN1 = HIGH and IN2 = LOW in order to set the direction to backwards for motor 1
+{
+  digitalWrite(8,HIGH); //IN1
+  digitalWrite(9,LOW); //IN2
+}
+
+void rightForwards(void)  //This function sets IN3 = LOW and IN4 = HIGH in order to set the direction to forwards for motor 2
+{
+  digitalWrite(10,LOW); //IN3
+  digitalWrite(11,HIGH); //IN4
+}
+void rightBackwards(void) //This function sets IN3 = HIGH and IN4 = LOW in order to set the direction to forwards for motor 2
+{
+  digitalWrite(10,HIGH); //IN3
+  digitalWrite(11,LOW); //IN4
+
+}
+
+void allForwards(void)  //This function sets IN3 = LOW and IN4 = HIGH in order to set the direction to forwards for motor 2
+{
+  digitalWrite(10,LOW); //IN3
+  digitalWrite(11,HIGH); //IN4
+  digitalWrite(8,LOW); //IN1
+  digitalWrite(9,HIGH); //IN2
+  analogWrite(5, 70);
+  analogWrite(6,70);
+}
+void allBackwards(void)  //This function sets IN3 = LOW and IN4 = HIGH in order to set the direction to forwards for motor 2
+{
+  digitalWrite(10,HIGH); //IN3
+  digitalWrite(11,LOW); //IN4
+  digitalWrite(8,HIGH); //IN1
+  digitalWrite(9,LOW); //IN2
+}
+
+
+
+//Uses Line algorithm to do follow a line YAY
+void lineFollow(int z)
+{
+  analogWrite(5,70);
+  analogWrite(6,70);
+  float left2 = analogRead(A0);
+  float left1 = analogRead(A1);
+  float right1 = analogRead(A2);
+  float right2 = analogRead(A3);
+
+  float value = ((-30.0*left2) + (-10.0*left1) + (10.0*right1) + (30.0*right2)) / (left2 + left1 + right1 + right2); //negative result is left of line, positive result is right
+  Serial.print("Distance from Line is: ");
+  Serial.println(value);
+  delay(50);
+  
+   if(value > 0){
+   allForwards();
+   analogWrite(5, 70+ (z*value));
+   }
+   
+   else if(value < 0){
+   allForwards();
+   analogWrite(6, 70+ (z*value));
+   }   
+}
+
+
+//void park(void) 
+//{
+// analogWrite(5, 0);
+//analogWrite(6, 0);
+//}
