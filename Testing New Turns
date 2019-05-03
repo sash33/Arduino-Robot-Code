@@ -46,6 +46,7 @@ void loop() {
   int z = 3; //This value changes the extent of arduinos turn
    //Line following Algorithm using line estimation
    
+  allForwards(); 
   analogWrite(5,70);
   analogWrite(6,70);
   float left2 = analogRead(A0);
