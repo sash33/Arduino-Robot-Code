@@ -40,10 +40,11 @@ void setup() {
   enc_init(); //initialise encoders
   
 }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void loop() {
   // put your main code here, to run repeatedly:
-  int z = 3; //This value changes the extent of arduinos turn
+  int z = 4; //This value changes the extent of arduinos turn
    //Line following Algorithm using line estimation
    
   allForwards(); 
@@ -58,19 +59,27 @@ void loop() {
   Serial.print("Distance from Line is: ");
   Serial.println(value);
   delay(50);
+  if 
 
   
    if(value > 0){
    allForwards();
-   analogWrite(5, 70+ (z*value));
-   analogWrite(6, 70- (z*value));
+   analogWrite(6, 70+ (z*value));
+   
+   if(value - 70 < 0)
+   value = 70;
+   
+   analogWrite(5, 70- (z*value));
    delay(50);
    }
    
    else if(value < 0){
    allForwards();
-   analogWrite(6, 70+ (z*value));
-   analogWrite(5, 70- (z*value));
+   analogWrite(5, 70+ (z*value));
+   
+   if(value - 70 < 0)
+   value = 70;
+   analogWrite(6, 70- (z*value));
    delay(50);
    }
    //End of basic line following code.
