@@ -1,3 +1,4 @@
+
 #include <ENGG1500Lib.h>
 #define ENA 5                                                     //motor outputs
 #define ENB 6
@@ -40,49 +41,18 @@ void setup() {
   enc_init(); //initialise encoders
   
 }
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+ int z = 3;
+ int s = 70;
 void loop() {
   // put your main code here, to run repeatedly:
-  int z = 4; //This value changes the extent of arduinos turn
-   //Line following Algorithm using line estimation
-   
-  allForwards(); 
-  analogWrite(5,70);
-  analogWrite(6,70);
-  float left2 = analogRead(A0);
-  float left1 = analogRead(A1);
-  float right1 = analogRead(A2);
-  float right2 = analogRead(A3);
-
-  float value = ((-30.0*left2) + (-10.0*left1) + (10.0*right1) + (30.0*right2)) / (left2 + left1 + right1 + right2); //negative result is left of line, positive result is right
-  Serial.print("Distance from Line is: ");
-  Serial.println(value);
-  delay(50);
-  if 
+ 
 
   
-   if(value > 0){
-   allForwards();
-   analogWrite(6, 70+ (z*value));
-   
-   if(value - 70 < 0)
-   value = 70;
-   
-   analogWrite(5, 70- (z*value));
-   delay(50);
-   }
-   
-   else if(value < 0){
-   allForwards();
-   analogWrite(5, 70+ (z*value));
-   
-   if(value - 70 < 0)
-   value = 70;
-   analogWrite(6, 70- (z*value));
-   delay(50);
-   }
-   //End of basic line following code.
+      lineFollow(z);
+   //   followLine();
+    //  if (sensorMiddleLine == 0 && sensorLeftLine == 0 && sensorRightLine == 0)
+    //     noLineGuess();
+     //    Serial.print("Outside funtion");
 }
 
 
@@ -180,8 +150,8 @@ void allForwards(void)  //This function sets IN3 = LOW and IN4 = HIGH in order t
   digitalWrite(11,HIGH); //IN4
   digitalWrite(8,LOW); //IN1
   digitalWrite(9,HIGH); //IN2
-  analogWrite(5, 70);
-  analogWrite(6,70);
+  analogWrite(5,s);
+  analogWrite(6,s);
 }
 void allBackwards(void)  //This function sets IN3 = LOW and IN4 = HIGH in order to set the direction to forwards for motor 2
 {
@@ -193,7 +163,41 @@ void allBackwards(void)  //This function sets IN3 = LOW and IN4 = HIGH in order 
 
 
 
+//Uses Line algorithm to do follow a line YAY
+void lineFollow(int z)
+{
+  allForwards();
+  float left2 = analogRead(A0);
+  float left1 = analogRead(A1);
+  float right1 = analogRead(A2);
+  float right2 = analogRead(A3);
 
+  float value = ((-30.0*left2) + (-10.0*left1) + (10.0*right1) + (30.0*right2)) / (left2 + left1 + right1 + right2); //negative result is left of line, positive result is right
+  Serial.print("Distance from Line is: ");
+  Serial.println(value);
+ delay(50);
+
+  if(value >= -5 && value <= 5){
+  allForwards();
+  analogWrite(5,s);
+  analogWrite(6,s);
+  delay(50);
+  }
+ 
+   else if(value > 5){
+   analogWrite(6,s+ (z*value));
+   rightBackwards();
+  
+   delay(50);
+   }
+   
+   else if(value < -5){
+    value * -1;
+   analogWrite(5,s+ (z*value));
+   leftBackwards();
+   delay(50); 
+   }   
+}
 
 
 //void park(void) 
