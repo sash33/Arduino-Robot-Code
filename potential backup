@@ -1,0 +1,127 @@
+#include <ENGG1500Lib.h>
+#define ENA 5                                                     //motor outputs
+#define ENB 6
+#define IN1 8
+#define IN2 9
+#define IN3 10
+#define IN4 11
+
+
+
+// These #define statements make the code more readable.
+// Instead of a pin number "7" or "12" we can write "ECHO" or "TRIG"
+#define ECHO 12
+#define TRIG 7
+
+void setup() {
+  //sensors
+  pinMode(A0,INPUT); // middle line sensor
+  pinMode(A1,INPUT); // left line sensor
+  pinMode(A2,INPUT); // right line sensor
+  pinMode(A3,OUTPUT); // servo
+  pinMode(A4,INPUT); //left front corner sensor
+  pinMode(A5,INPUT);  //right front corner sensor
+  //pinMode(A4,INPUT);
+  pinMode(ECHO,INPUT); //Initialise pin 12 as an input
+  pinMode(TRIG,OUTPUT); //Initialise pin 7 as an output
+  Serial.begin(9600); //begin serial communication 
+
+  
+
+//engine control
+  pinMode(5,OUTPUT); //set ENA as an output
+  pinMode(6,OUTPUT); //set ENB as an output
+  pinMode(8,OUTPUT); //set IN1 as an output
+  pinMode(9,OUTPUT); //set IN2 as an output
+  pinMode(10,OUTPUT); //set IN3 as an output
+  pinMode(11,OUTPUT); //set IN4 as an output
+  delay(2000);//delay before starting loop
+  enc_init(); //initialise encoders
+  
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+int right, midR, midL, left;
+  left = digitalRead(A0);
+  midL = digitalRead(A1);
+  midR = digitalRead(A2);
+  right = digitalRead(A3);
+
+if (midL == 1 && midR == 1){  //normal go straight
+  allForwards();
+  analogWrite(5, 70);
+  analogWrite(6, 70);
+  delay(3);
+  
+}
+if (midL == 1 && midR == 0){ //move slowly left
+  leftForwards();
+  analogWrite(5, 70);
+  analogWrite(6, 70);
+  delay(3);
+}
+
+if (midL == 0 && midR == 1){ //move slowly right
+  rightForwards();
+  analogWrite(5, 70);
+  analogWrite(6, 70);
+  delay(3);
+}
+
+if (left == 1 && midL == 0 && midR == 0 && right == 0){
+  leftForwards();
+  analogWrite(5, 77);
+  analogWrite(6, 77);
+  delay(3);
+}
+
+if (left == 0 && midL == 0 && midR == 0 && right == 1){
+  rightForwards();
+  analogWrite(5, 77);
+  analogWrite(6, 77);
+  delay(3);
+}
+
+  
+}
+  //motor control
+  void leftForwards(void) //This function sets IN1 = LOW and IN2 = HIGH in order to set the direction to forwards for motor 1
+{
+  digitalWrite(8,LOW); //IN1
+  digitalWrite(9,HIGH); //IN2
+}
+
+void leftBackwards(void) //This function sets IN1 = HIGH and IN2 = LOW in order to set the direction to backwards for motor 1
+{
+  digitalWrite(8,HIGH); //IN1
+  digitalWrite(9,LOW); //IN2
+}
+
+void rightForwards(void)  //This function sets IN3 = LOW and IN4 = HIGH in order to set the direction to forwards for motor 2
+{
+  digitalWrite(10,LOW); //IN3
+  digitalWrite(11,HIGH); //IN4
+}
+void rightBackwards(void) //This function sets IN3 = HIGH and IN4 = LOW in order to set the direction to forwards for motor 2
+{
+  digitalWrite(10,HIGH); //IN3
+  digitalWrite(11,LOW); //IN4
+
+}
+void allForwards(void)  //This function sets IN3 = LOW and IN4 = HIGH in order to set the direction to forwards for motor 2
+{
+  digitalWrite(10,LOW); //IN3
+  digitalWrite(11,HIGH); //IN4
+  digitalWrite(8,LOW); //IN1
+  digitalWrite(9,HIGH); //IN2
+}
+void allBackwards(void)  //This function sets IN3 = LOW and IN4 = HIGH in order to set the direction to forwards for motor 2
+{
+  digitalWrite(10,HIGH); //IN3
+  digitalWrite(11,LOW); //IN4
+  digitalWrite(8,HIGH); //IN1
+  digitalWrite(9,LOW); //IN2
+
+
+}
