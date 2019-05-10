@@ -47,6 +47,13 @@ int right, midR, midL, left;
   midL = digitalRead(A1);
   midR = digitalRead(A2);
   right = digitalRead(A3);
+  
+if (left == 0 && midL == 0 && midR == 0 && right == 1){ //if no line detected then go slowly forwards
+  allForwards();
+  analogWrite(5, 65);
+  analogWrite(6, 65);
+  delay(1);
+}
 
 if (midL == 1 && midR == 1){  //normal go straight
   allForwards();
