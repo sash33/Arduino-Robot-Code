@@ -18,7 +18,7 @@ void setup() {
   pinMode(A0,INPUT); // middle line sensor
   pinMode(A1,INPUT); // left line sensor
   pinMode(A2,INPUT); // right line sensor
-  pinMode(A3,OUTPUT); // servo
+  pinMode(A3,INPUT); // servo
   pinMode(A4,INPUT); //left front corner sensor
   pinMode(A5,INPUT);  //right front corner sensor
   //pinMode(A4,INPUT);
