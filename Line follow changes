@@ -1,6 +1,4 @@
 #include <ENGG1500Lib.h>
-#include <Wire.h>
-#include <SparkFun_APDS9960.h>
 
 #define ENA 5                                                     //motor outputs
 #define ENB 6
@@ -13,9 +11,6 @@
 // Instead of a pin number "7" or "12" we can write "ECHO" or "TRIG"
 #define ECHO 12
 #define TRIG 7
-
-SparkFun_APDS9960 apds = SparkFun_APDS9960();
-uint8_t proximity_data = 0;
 
 int dir = 0;
 
@@ -42,26 +37,6 @@ void setup() {
   delay(2000);//delay before starting loop
   enc_init(); //initialise encoders
 
-  // Initialize APDS-9960 (configure I2C and initial values)
-  if ( apds.init() ) {
-    Serial.println(F("APDS-9960 initialization complete"));
-  } else {
-    
-    Serial.println(F("Something went wrong during APDS-9960 init!"));
-  }
-  
-  // Adjust the Proximity sensor gain
-  if ( !apds.setProximityGain(PGAIN_2X) ) {
-    Serial.println(F("Something went wrong trying to set PGAIN"));
-  }
-  
-  // Start running the APDS-9960 proximity sensor (no interrupts)
-  if ( apds.enableProximitySensor(false) ) {
-    Serial.println(F("Proximity sensor is now running"));
-  } else {
-    Serial.println(F("Something went wrong during sensor init!"));
-  }
-  
 int dir = 0;
 }
 
@@ -71,8 +46,7 @@ mm = sonar_mm();
 
 float rgb = 0.0;
 
-rgb = apds.readProximity(proximity_data);
-delay(250); //maybe DELETE
+
 
 
   // put your main code here, to run repeatedly:
@@ -82,20 +56,13 @@ int right, midR, midL, left;
   midR = digitalRead(A2);
   right = digitalRead(A3);
   
-int rightT = 1, leftT = 2, straight = 0;
+int rightT = 1, leftT = 2, straight = 0, smlR = 3, smlL = 4;
 
 //put reasoning why sensors moved back in report
 if(mm < 200){
   stoprobot();
   //Serial.print("Distance");
   //Serial.print(mm);
-  //delay(3);
-}
-
-if(rgb > 100){
-  stoprobot();
-  //Serial.print("Distance");
-  Serial.print(rgb);
   //delay(3);
 }
 
@@ -107,8 +74,12 @@ if(left == 1){
   dir = rightT;
   //if mid 2 are on follow line
   //on the right is on = right turn  because middle will be off
-}else if(midR == 1 || midL == 1){
-  dir = straight;
+  
+}else if(midR == 1){
+  dir = smlR;
+  
+}else if(midL == 1){
+  dir = smlL;
   
 }else{
   dir = straight;
@@ -159,6 +130,20 @@ else if(dir == rightT){
   leftForwards();
   analogWrite(5, 70);
   analogWrite(6, 70);
+  delay(1);
+  
+}else if(dir == midR){
+  leftForwards();
+  rightForwards();
+  analogWrite(5, 100);
+  analogWrite(6, 70);
+  delay(1);
+  
+}else if(dir == midL){
+  leftForwards();
+  rightForwards();
+  analogWrite(5, 70);
+  analogWrite(6, 100);
   delay(1);
 }
 else{
