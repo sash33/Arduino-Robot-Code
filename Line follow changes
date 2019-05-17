@@ -46,6 +46,7 @@ void setup() {
   if ( apds.init() ) {
     Serial.println(F("APDS-9960 initialization complete"));
   } else {
+    
     Serial.println(F("Something went wrong during APDS-9960 init!"));
   }
   
@@ -60,8 +61,7 @@ void setup() {
   } else {
     Serial.println(F("Something went wrong during sensor init!"));
   }
-}
-
+  
 int dir = 0;
 }
 
@@ -69,7 +69,8 @@ void loop() {
 unsigned int mm = 0;
 mm = sonar_mm();
 
-unsigned float rgb = 0.0;
+float rgb = 0.0;
+
 rgb = apds.readProximity(proximity_data);
 delay(250); //maybe DELETE
 
@@ -86,12 +87,12 @@ int rightT = 1, leftT = 2, straight = 0;
 //put reasoning why sensors moved back in report
 if(mm < 200){
   stoprobot();
-  Serial.print("Distance");
-  Serial.print(mm);
+  //Serial.print("Distance");
+  //Serial.print(mm);
   //delay(3);
 }
 
-if(rgb > 160){
+if(rgb > 100){
   stoprobot();
   //Serial.print("Distance");
   Serial.print(rgb);
